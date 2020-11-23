@@ -33,22 +33,20 @@
 		</item>
 	</argument>
 	<dataSource name="pincodechecker_form_data_source">
-		<argument name="dataProvider" xsi:type="configurableObject">
-			<argument name="class" xsi:type="string">Lof\PincodeChecker\Model\Pincodechecker\DataProvider</argument>
-			<argument name="name" xsi:type="string">pincodechecker_form_data_source</argument>
-			<argument name="primaryFieldName" xsi:type="string">pincode_id</argument>
-			<argument name="requestFieldName" xsi:type="string">pincode_id</argument>
-			<argument name="data" xsi:type="array">
-				<item name="config" xsi:type="array">
-					<item name="submit_url" path="*/*/save" xsi:type="url"/>
-				</item>
-			</argument>
-		</argument>
 		<argument name="data" xsi:type="array">
-			<item name="js_config" xsi:type="array">
-				<item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
-			</item>
-		</argument>
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="*/*/save"/>
+        </settings>
+        <dataProvider class="Lof\PincodeChecker\Model\Pincodechecker\DataProvider" name="pincodechecker_form_data_source">
+            <settings>
+                <requestFieldName>pincode_id</requestFieldName>
+                <primaryFieldName>pincode_id</primaryFieldName>
+            </settings>
+        </dataProvider>
 	</dataSource>
 	<fieldset name="General">
 		<argument name="data" xsi:type="array">
