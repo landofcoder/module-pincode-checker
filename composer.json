@@ -9,6 +9,7 @@
     "landofcoder pincode checker",
     "magento 2 pincode checker extension"
     ],
+    "version": "1.0.0",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
