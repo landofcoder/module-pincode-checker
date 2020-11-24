@@ -71,4 +71,15 @@ interface PincodecheckerRepositoryInterface
      */
     
     public function deleteById($pincodecheckerId);
+
+    /**
+     * Check Pincode By Product Sku
+     * @param string $sku
+     * @param string $pincode
+     * @return string $message
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    
+    public function checkPincode($sku,$pincode);
 }

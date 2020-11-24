@@ -17,6 +17,7 @@ namespace Lof\PincodeChecker\Model;
 use Lof\PincodeChecker\Api\PincodecheckerRepositoryInterface;
 use Lof\PincodeChecker\Api\Data\PincodecheckerSearchResultsInterfaceFactory;
 use Lof\PincodeChecker\Api\Data\PincodecheckerInterfaceFactory;
+use Lof\PincodeChecker\Helper\Config as ConfigHelper;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Exception\CouldNotDeleteException;
@@ -26,6 +27,7 @@ use Magento\Framework\Reflection\DataObjectProcessor;
 use Lof\PincodeChecker\Model\ResourceModel\Pincodechecker as ResourcePincodechecker;
 use Lof\PincodeChecker\Model\ResourceModel\Pincodechecker\CollectionFactory as PincodecheckerCollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Catalog\Api\ProductRepositoryInterface;
 
 class PincodecheckerRepository implements pincodecheckerRepositoryInterface
 {
@@ -46,6 +48,10 @@ class PincodecheckerRepository implements pincodecheckerRepositoryInterface
 
     private $storeManager;
 
+    protected $configHelper;
+
+    protected $productRepository;
+
 
     /**
      * @param ResourcePincodechecker $resource
@@ -56,6 +62,8 @@ class PincodecheckerRepository implements pincodecheckerRepositoryInterface
      * @param DataObjectHelper $dataObjectHelper
      * @param DataObjectProcessor $dataObjectProcessor
      * @param StoreManagerInterface $storeManager
+     * @param ConfigHelper $configHelper
+     * @param ProductRepositoryInterface $productRepository
      */
     public function __construct(
         ResourcePincodechecker $resource,
@@ -65,7 +73,9 @@ class PincodecheckerRepository implements pincodecheckerRepositoryInterface
         PincodecheckerSearchResultsInterfaceFactory $searchResultsFactory,
         DataObjectHelper $dataObjectHelper,
         DataObjectProcessor $dataObjectProcessor,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        ConfigHelper $configHelper,
+        ProductRepositoryInterface $productRepository
     ) {
         $this->resource = $resource;
         $this->pincodecheckerFactory = $pincodecheckerFactory;
@@ -75,6 +85,8 @@ class PincodecheckerRepository implements pincodecheckerRepositoryInterface
         $this->dataPincodecheckerFactory = $dataPincodecheckerFactory;
         $this->dataObjectProcessor = $dataObjectProcessor;
         $this->storeManager = $storeManager;
+        $this->configHelper = $configHelper;
+        $this->productRepository = $productRepository;
     }
 
     /**
@@ -185,5 +197,53 @@ class PincodecheckerRepository implements pincodecheckerRepositoryInterface
     public function deleteById($pincodecheckerId)
     {
         return $this->delete($this->getById($pincodecheckerId));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkPincode($sku, $pincode){
+        $pincodeStatus = $this->getPincodeStatus($pincode);
+        $productStatus = $this->getProductPincodeStatus($sku, $pincode);
+        if($productStatus){
+            $message = $this->configHelper->getMessage(false, $pincode);
+        }else{
+            $message = $this->configHelper->getMessage((bool)$pincodeStatus, $pincode);
+        }
+        return $message;
+    }
+
+    /**
+     * Get pincode status
+     */
+    public function getPincodeStatus($pincode)
+    {
+        $collection = $this->pincodecheckerCollectionFactory->create();
+        $collection->addFieldToFilter('pincode', array('eq' => $pincode));
+        
+        if($collection->getData()){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    /**
+     * Get pincode status by product
+     */
+    public function getProductPincodeStatus($sku, $pincode)
+    {
+        $product = $this->productRepository->get($sku);
+        $pincodes = $product->getData('pincode');
+        $pincodeArr = explode(',', $pincodes);
+
+        if(in_array($pincode, $pincodeArr))
+        {
+            return true;
+        }else{
+            return false;
+        }
+            
     }
 }

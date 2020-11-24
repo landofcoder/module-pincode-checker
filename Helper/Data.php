@@ -30,10 +30,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $resultFactory;
 
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
+    protected $helperConfig;
 
     /**
      * Constructor
@@ -42,20 +39,20 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Catalog\Model\Product $product
      * @param \Lof\PincodeChecker\Model\ResourceModel\Pincodechecker\CollectionFactory $pincodeCollection
      * @param \Magento\Framework\Controller\ResultFactory $resultFactory
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param Config $config
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Catalog\Model\Product $product,
         \Lof\PincodeChecker\Model\ResourceModel\Pincodechecker\CollectionFactory $pincodeCollection,
         \Magento\Framework\Controller\ResultFactory $resultFactory,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        Config $config
     )
     {
         $this->pincodeCollection = $pincodeCollection;
         $this->product = $product;
         $this->resultFactory = $resultFactory;
-        $this->scopeConfig = $scopeConfig;
+        $this->helperConfig = $config;
         parent::__construct($context);
     }
 
@@ -106,13 +103,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getMessage($status, $pincode)
     {
-        if($status){
-            $message = "<h3>".$this->getSuccessMessage()."</h3>";
-        }else{
-            $message = "<h3 style='color:red'>".$this->getFailMessage()."</h3>";
-        }
-
-        return $message;
+        return $this->helperConfig->getMessage($status, $pincode);
     }
 
     /**
@@ -130,7 +121,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getIsEnable()
     {
-        return $this->scopeConfig->getValue('pincode/general/active', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->helperConfig->getIsEnable();
     }
 
     /**
@@ -138,7 +129,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getIsCheckonAddtoCart()
     {
-        return $this->scopeConfig->getValue('pincode/general/checkaddtocart', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->helperConfig->getIsCheckonAddtoCart();
     }
 
     /**
@@ -146,7 +137,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getSuccessMessage()
     {
-        return $this->scopeConfig->getValue('pincode/general/successmessage', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->helperConfig->getSuccessMessage();
     }
 
     /**
@@ -154,6 +145,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getFailMessage()
     {
-        return $this->scopeConfig->getValue('pincode/general/failmessage', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->helperConfig->getFailMessage();
     }
 }
