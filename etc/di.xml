@@ -32,7 +32,7 @@
 	</type>
 	<preference for="Lof\PincodeChecker\Api\Data\PincodecheckerInterface" type="Lof\PincodeChecker\Model\Pincodechecker" />
 	<preference for="Lof\PincodeChecker\Api\Data\PincodecheckerSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
-	<preference for="Lof\PincodeChecker\Api\Data\PincodecheckerRepositoryInterface" type="Lof\PincodeChecker\Model\PincodecheckerRepository" />
+	<preference for="Lof\PincodeChecker\Api\PincodecheckerRepositoryInterface" type="Lof\PincodeChecker\Model\PincodecheckerRepository" />
 </config>
 
 

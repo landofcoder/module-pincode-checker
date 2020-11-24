@@ -29,7 +29,7 @@ use Lof\PincodeChecker\Model\ResourceModel\Pincodechecker\CollectionFactory as P
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 
-class PincodecheckerRepository implements pincodecheckerRepositoryInterface
+class PincodecheckerRepository implements PincodecheckerRepositoryInterface
 {
 
     protected $resource;
@@ -210,6 +210,7 @@ class PincodecheckerRepository implements pincodecheckerRepositoryInterface
         }else{
             $message = $this->configHelper->getMessage((bool)$pincodeStatus, $pincode);
         }
+        $message = strip_tags($message);
         return $message;
     }
 
